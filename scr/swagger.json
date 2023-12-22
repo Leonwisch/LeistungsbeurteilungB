@@ -1,0 +1,213 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Task API"
+    },
+    "paths": {
+      "/login": {
+        "post": {
+          "summary": "Login",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful login"
+            },
+            "401": {
+              "description": "Invalid credentials"
+            }
+          }
+        }
+      },
+      "/verify": {
+        "get": {
+          "summary": "Verify session",
+          "responses": {
+            "200": {
+              "description": "Session verified"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        }
+      },
+      "/logout": {
+        "delete": {
+          "summary": "Logout",
+          "responses": {
+            "204": {
+              "description": "Logged out"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        }
+      },
+      "/tasks": {
+        "get": {
+          "summary": "Get all tasks",
+          "responses": {
+            "200": {
+              "description": "List of tasks"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        },
+        "post": {
+          "summary": "Create a new task",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "type": "string"
+                    },
+                    "author": {
+                      "type": "string"
+                    },
+                    "creationDate": {
+                      "type": "string"
+                    },
+                    "fulfillmentDate": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Task created"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        }
+      },
+      "/task/{id}": {
+        "get": {
+          "summary": "Get a task by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Task details"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        },
+        "patch": {
+          "summary": "Update a task by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "type": "string"
+                    },
+                    "author": {
+                      "type": "string"
+                    },
+                    "creationDate": {
+                      "type": "string"
+                    },
+                    "fulfillmentDate": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Task updated"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a task by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Task deleted"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "401": {
+              "description": "Not logged in"
+            }
+          }
+        }
+      }
+    }
+  }
+  

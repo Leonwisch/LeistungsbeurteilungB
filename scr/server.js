@@ -7,6 +7,9 @@ const app = express();
 const { randomUUID } = require('node:crypto');
 const session = require('express-session');
 const validator = require("email-validator");
+// eslint-disable-next-line import/no-extraneous-dependencies
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const port = 3000;
 
@@ -17,6 +20,7 @@ app.use(session({
   cookie: {},
 }));
 
+app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 
 const secretAdminCredentials = { email: "desk@library.example", password: "m295" };
@@ -25,6 +29,33 @@ const secretAdminCredentials = { email: "desk@library.example", password: "m295"
 let tasks = [
   {
     id: "1", task: "Football", author: "Leon", creationDate: "12.12.2023", fulfillmentDate: "13.12.2023",
+  },
+  {
+    id: "2", task: "Task 2", author: "Author 2", creationDate: "13.12.2023", fulfillmentDate: "14.12.2023",
+  },
+  {
+    id: "3", task: "Task 3", author: "Author 3", creationDate: "14.12.2023", fulfillmentDate: "15.12.2023",
+  },
+  {
+    id: "4", task: "Task 4", author: "Author 4", creationDate: "15.12.2023", fulfillmentDate: "16.12.2023",
+  },
+  {
+    id: "5", task: "Task 5", author: "Author 5", creationDate: "16.12.2023", fulfillmentDate: "17.12.2023",
+  },
+  {
+    id: "6", task: "Task 6", author: "Author 6", creationDate: "17.12.2023", fulfillmentDate: "18.12.2023",
+  },
+  {
+    id: "7", task: "Task 7", author: "Author 7", creationDate: "18.12.2023", fulfillmentDate: "19.12.2023",
+  },
+  {
+    id: "8", task: "Task 8", author: "Author 8", creationDate: "19.12.2023", fulfillmentDate: "20.12.2023",
+  },
+  {
+    id: "9", task: "Task 9", author: "Author 9", creationDate: "20.12.2023", fulfillmentDate: "21.12.2023",
+  },
+  {
+    id: "10", task: "Task 10", author: "Author 10", creationDate: "21.12.2023", fulfillmentDate: "22.12.2023",
   },
 ];
 
