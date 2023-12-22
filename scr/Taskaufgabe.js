@@ -1,9 +1,20 @@
 const express = require('express');
 const app = express();
 const { randomUUID } = require('node:crypto');
+const session = require('express-session')
+const validator = require("email-validator");
 const port = 3000;
 
+app.use(session({
+  secret: 'supersecret',
+	resave: false,
+	saveUninitialized: false,
+  cookie: {}
+}))
+
 app.use(express.json());
+
+const secretAdminCredentials = { email: "desk@library.example", password: "m295" }
 
 let tasks = [
   {id: "1", task: "Football" },
@@ -18,27 +29,67 @@ let tasks = [
   {id: "10", task: "Boxen" },
 ];
 
+//Login
+app.post('/login', function (request, response) {
+	const { email, password } = request.body
+
+	if (validator.validate(email) && password == secretAdminCredentials.password) {
+		request.session.email = email
+		return response.status(200).json({ email: request.session.email })
+	}
+
+  return response.status(401).json({ error: "Invalid credentials" })
+})
+
+app.get('/verify', function (request, response) {
+	if (request.session.email) {
+		return response.status(200).json({ email: request.session.email })
+	}
+
+  return response.status(401).json({ error: "Not logged in" })
+})
+
+app.delete('/logout', function (request, response) {
+	if (request.session.email) {
+		request.session.email = null
+		return response.status(204).send()
+	}
+
+  return response.status(401).json({ error: "Not logged in" })
+})
+
+//Tasks 
 app.get('/tasks', (request, response) => {
-  response.status(200).send(tasks);
+  if(request.session.email){
+  return response.status(200).send(tasks);
+  }
+  return response.status(401).json({ error: "Not logged in" })
 });
 
 app.post('/tasks', (request, response) => {
+  if(request.session.email){
   const newTask = request.body;
   newTask['id'] = randomUUID();
-    tasks = [...tasks, newTask];
-    response.status(201).send(tasks);
+  tasks = [...tasks, newTask];
+  return response.status(201).send(tasks);
+  }
+  return response.status(401).json({ error: "Not logged in" })
   });
 
 app.get('/task/:id', (request, response) => {
+  if(request.session.email){
   const task = tasks.find((task) => task.id === request.params.id);
   if (task) {
     response.status(200).json(task);
   } else {
     response.status(404).json({ error: 'Task not found' });
   }
+}
+return response.status(401).json({ error: "Not logged in" })
 });
 
 app.patch('/task/:id', (request, response) => {
+  if(request.session.email){
   const keys = Object.keys(request.body);
   const id = request.params.id
 
@@ -50,9 +101,12 @@ app.patch('/task/:id', (request, response) => {
   } else {
     return response.status(404).send("Id not found")
   }
+}
+return response.status(401).json({ error: "Not logged in" })
 });
 
 app.delete('/task/:id', (request, response) => {
+  if(request.session.email){
   const id = request.params.id
 
   if (id in tasks) {
@@ -61,8 +115,11 @@ app.delete('/task/:id', (request, response) => {
   } else {
     response.status(404).json({ error: 'Id not found' });
   }
+}
+return response.status(401).json({ error: "Not logged in" })
 });
 
+//Server
 app.listen(port, () => {
   console.log(`Task app listening on port ${port}`);
 });
